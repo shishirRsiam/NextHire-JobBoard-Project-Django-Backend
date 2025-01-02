@@ -1,17 +1,18 @@
 from .JobPost_App_Import import *
 from .serializers import JobPostSerializer
-from . models import JobPost, Applied
-from rest_framework.views import APIView
-from .response import *
-from django.db.models import Q
+from .models import JobPost, Applied
+
 
 class JobPostApiViewSet(APIView):
     def post(self, request):
         serializer = JobPostSerializer(data=request.data)
         if serializer.is_valid():
             post = serializer.save(user=request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors)
+            post.category.set(request.data['category'])  
+            post.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
     
     def get(self, request, *args, **kwargs):
         job_post_id = kwargs.get('id')
