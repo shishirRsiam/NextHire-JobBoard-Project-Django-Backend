@@ -57,11 +57,6 @@ class JobPostApiViewSet(APIView):
 class JobApplyApiView(APIView):
     def post(self, request, *args, **kwargs):
         job_post_id = kwargs.get('id')
-
-        print(')_'*30)
-        print('->', request.user)
-        print('->', job_post_id)
-        print('-> is_apply:', request.data['is_apply'])
         if job_post_id:
             try:
                 job_post = JobPost.objects.get(id=job_post_id)
@@ -74,3 +69,4 @@ class JobApplyApiView(APIView):
             response = get_job_job_applied_response(request, job_post)
         else: response = get_job_details_button_name(request, job_post)
         return Response(response)
+

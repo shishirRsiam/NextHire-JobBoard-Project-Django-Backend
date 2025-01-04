@@ -112,6 +112,19 @@ class UserView(APIView):
             "appliedData": AppliedSerializer.data
         }
         return Response(response)
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        can_post = request.query_params.get('can_post', None)
+        if can_post:
+            print('()'*30)
+            return Response(
+                {"can_post": request.user.userprofile.role == 'Employer'},
+            )
+        userSerializer = UserSerializer(user.userprofile)
+        response = {
+            "userData": userSerializer.data,
+        }
+        return Response(response)
     
 
 class UserUpdateView(APIView):
