@@ -105,11 +105,17 @@ class UserView(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user
         appliedJobs = user.applied.all().order_by('-id')
+        postedJob = user.jobposts.all().order_by('-id')
+        print('(-)'*30)
+        print(postedJob)
+
         userSerializer = UserSerializer(user.userprofile)
+        jobPostSerializer = JobPostSerializer(postedJob, many=True)
         AppliedSerializer = ApplySerializer(appliedJobs, many=True)
         response = {
             "userData": userSerializer.data,
-            "appliedData": AppliedSerializer.data
+            "appliedData": AppliedSerializer.data,
+            "postedData": jobPostSerializer.data,
         }
         return Response(response)
     def get(self, request, *args, **kwargs):

@@ -64,7 +64,6 @@ class JobApplyApiView(APIView):
                 return Response({"error": "Job post not found."}, status=404)
             
         if request.data['is_apply']:
-            print('-> data', request.data)
             Applied.objects.create(user=request.user, job=job_post)
             response = get_job_job_applied_response(request, job_post)
         else: response = get_job_details_button_name(request, job_post)
@@ -73,8 +72,6 @@ class JobApplyApiView(APIView):
 
 class SuggestionApiView(APIView):
     def get(self, request, *args, **kwargs):
-        print('()'*30)
         job_posts = JobPost.objects.exclude(applied__user=request.user).order_by('-id')[:6]
         serializer = JobPostSerializer(job_posts, many=True)
-        print(serializer.data)
         return Response(serializer.data)
