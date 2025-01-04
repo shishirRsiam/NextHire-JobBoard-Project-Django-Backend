@@ -43,7 +43,7 @@ class JobPostApiViewSet(APIView):
             if search_by_applied == "Applied":
                 job_posts = JobPost.objects.filter(applied__user=request.user)
             elif search_by_applied == "Not Applied":
-                job_posts = job_posts.filter(applied__isnull=True)
+                job_posts = JobPost.objects.exclude(applied__user=request.user)
                 print('-> not applied', request.user)
         print('\n\n')
 
@@ -70,3 +70,11 @@ class JobApplyApiView(APIView):
         else: response = get_job_details_button_name(request, job_post)
         return Response(response)
 
+
+class SuggestionApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        print('()'*30)
+        job_posts = JobPost.objects.exclude(applied__user=request.user).order_by('-id')[:6]
+        serializer = JobPostSerializer(job_posts, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
