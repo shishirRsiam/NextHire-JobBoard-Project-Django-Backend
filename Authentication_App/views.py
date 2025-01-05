@@ -48,7 +48,6 @@ class LoginApiView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        print('->', username, password)
         user = authenticate(request, username=username, password=password)
         if user:
             if not user.is_active:
@@ -107,7 +106,6 @@ class UserView(APIView):
         user = request.user
         appliedJobs = user.applied.all().order_by('-id')
         postedJob = user.jobposts.all().order_by('-id')
-        print(postedJob)
 
         userSerializer = UserSerializer(user.userprofile)
         jobPostSerializer = JobPostSerializer(postedJob, many=True)
@@ -122,7 +120,6 @@ class UserView(APIView):
         user = request.user
         can_post = request.query_params.get('can_post', None)
         if can_post:
-            print('()'*30)
             return Response(
                 {"can_post": request.user.userprofile.role == 'Employer'},
             )
