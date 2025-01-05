@@ -19,6 +19,13 @@ class JobPostApiViewSet(APIView):
         if job_post_id:
             try:
                 job_post = JobPost.objects.get(id=job_post_id)
+
+                is_delete = request.query_params.get('is_delete', None)
+                if is_delete:
+                    response = {'message': f"'{job_post.title}' post deleted successfully."}
+                    job_post.delete()
+                    return Response(response, status=200)
+
                 serializer = JobPostSerializer(job_post)
                 response = {
                     'total_applicants': job_post.applied.all().count(),
@@ -36,16 +43,12 @@ class JobPostApiViewSet(APIView):
         # if search_by_applied:
         #     job_posts = job_posts.filter(applied__user=request.user)
 
-        print('->::::', request.user)
-        print('->::::', search_by_applied, search_by_profile)
 
         if search_by_applied:
             if search_by_applied == "Applied":
                 job_posts = JobPost.objects.filter(applied__user=request.user)
             elif search_by_applied == "Not Applied":
                 job_posts = JobPost.objects.exclude(applied__user=request.user)
-                print('-> not applied', request.user)
-        print('\n\n')
 
         job_posts = job_posts.order_by('-id')
         serializer = JobPostSerializer(job_posts, many=True)

@@ -101,12 +101,12 @@ class LogoutView(APIView):
         
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
+    
 
     def post(self, request, *args, **kwargs):
         user = request.user
         appliedJobs = user.applied.all().order_by('-id')
         postedJob = user.jobposts.all().order_by('-id')
-        print('(-)'*30)
         print(postedJob)
 
         userSerializer = UserSerializer(user.userprofile)
