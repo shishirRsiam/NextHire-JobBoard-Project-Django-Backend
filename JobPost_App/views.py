@@ -1,7 +1,6 @@
 from .JobPost_App_Import import *
-from .serializers import JobPostSerializer
 from .models import JobPost, Applied
-
+from .serializers import JobPostSerializer, ApplySerializer
 
 class JobPostApiViewSet(APIView):
     def post(self, request):
@@ -25,10 +24,25 @@ class JobPostApiViewSet(APIView):
                     response = {'message': f"'{job_post.title}' post deleted successfully."}
                     job_post.delete()
                     return Response(response, status=200)
+                
 
+                is_application = request.query_params.get('is_application', None)
+                if is_application:
+                    print('()'*30)
+                    print(is_application)
+                    all_application = job_post.job_applied.all()
+                    all_application_serializer = ApplySerializer(all_application, many=True)
+                    job_post_serializer = JobPostSerializer(job_post)
+                    response = {
+                        'application': all_application_serializer.data,
+                        'job_post': job_post_serializer.data,
+                    }
+                    return Response(response)
+                    # return Response(get_user_job_application_response(request, job_post))
+                
                 serializer = JobPostSerializer(job_post)
                 response = {
-                    'total_applicants': job_post.applied.all().count(),
+                    'total_applicants': job_post.job_applied.all().count(),
                     'job_post': serializer.data,
                 }
                 return Response(response)
@@ -38,8 +52,8 @@ class JobPostApiViewSet(APIView):
         
         job_posts = JobPost.objects.all()
 
-        search_by_applied = request.query_params.get('searchByApplied')
-        search_by_profile = request.query_params.get('searchByProfile')
+        search_by_applied = request.query_params.get('searchByApplied', None)
+        search_by_profile = request.query_params.get('searchByProfile', None)
         # if search_by_applied:
         #     job_posts = job_posts.filter(applied__user=request.user)
 
