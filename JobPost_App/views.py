@@ -81,7 +81,15 @@ class JobApplyApiView(APIView):
                 return Response({"error": "Job post not found."}, status=404)
             
         if request.data['is_apply']:
-            Applied.objects.create(user=request.user, job=job_post)
+            print('()'*30)
+            print(request.data)
+            resume = request.user.userprofile.resume
+            if not resume:
+                response = get_resume_not_found_response()
+                return Response(response, status=404)
+            
+            description = request.data['description']
+            Applied.objects.create(user=request.user, job=job_post, resume=resume, description=description)
             response = get_job_job_applied_response(request, job_post)
         else: response = get_job_details_button_name(request, job_post)
         return Response(response)

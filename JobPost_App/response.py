@@ -1,3 +1,10 @@
+def get_resume_not_found_response():
+    response = {
+        'title': 'Resume not found.',
+        'message': 'Go to your profile and Please upload your updated resume.',
+    }
+    return response
+
 
 def get_job_details_button_name(request, job_post):
     can_apply = False

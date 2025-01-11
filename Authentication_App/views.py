@@ -1,6 +1,7 @@
 from .Authentication_App_Import import *
 from JobPost_App.serializers import *
 from Category_App.serializers import *
+from Authentication_App.serializers import *
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()

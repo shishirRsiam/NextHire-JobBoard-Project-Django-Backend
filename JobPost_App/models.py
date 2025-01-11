@@ -18,5 +18,8 @@ class JobPost(models.Model):
 class Applied(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="applied")
     job = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name="job_applied")
+    resume = models.TextField(null=1)
+    description = models.TextField(null=1)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
