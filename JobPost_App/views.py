@@ -11,10 +11,32 @@ class JobPostApiViewSet(APIView):
             post.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+    
+    # Update an existing job post
+    def put(self, request, pk=None):
+        job_post = get_object_or_404(JobPost, pk=pk, user=request.user) 
+        serializer = JobPostSerializer(job_post, data=request.data)
+        if serializer.is_valid():
+            post = serializer.save()
+            post.category.set(request.data.get('category', []))
+            post.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
 
+    # Partial update of an existing job post
+    def patch(self, request, pk=None):
+        job_post = get_object_or_404(JobPost, pk=pk, user=request.user)
+        serializer = JobPostSerializer(job_post, data=request.data, partial=True)
+        if serializer.is_valid():
+            post = serializer.save()
+            if 'category' in request.data:
+                post.category.set(request.data.get('category', []))
+            post.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
     
     def get(self, request, *args, **kwargs):
-        job_post_id = kwargs.get('id')
+        job_post_id = kwargs.get('pk')
         if job_post_id:
             try:
                 job_post = JobPost.objects.get(id=job_post_id)
