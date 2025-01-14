@@ -42,6 +42,13 @@ class UserRegistrationApiView(APIView):
 
         response = get_successful_account_registration_response()
         return Response(data=response, status=201)
+    
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        print('()'*30)
+        print(request.data)
+        
+        return Response({"message": "User updated successfully."})
 
 class LoginApiView(APIView):
     permission_classes = [AllowAny]
@@ -102,7 +109,6 @@ class LogoutView(APIView):
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
     
-
     def post(self, request, *args, **kwargs):
         user = request.user
         appliedJobs = user.applied.all().order_by('-id')
@@ -117,6 +123,7 @@ class UserView(APIView):
             "postedData": jobPostSerializer.data,
         }
         return Response(response)
+    
     def get(self, request, *args, **kwargs):
         user = request.user
         can_post = request.query_params.get('can_post', None)
@@ -130,13 +137,28 @@ class UserView(APIView):
         }
         return Response(response)
     
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        print('()'*30)
+        return Response({"message": "User updated successfully."})
+    
 
 class UserUpdateView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
-        userprofile = request.user.userprofile
-        userprofile.bio = request.data.get('bio')
-        userprofile.resume = request.data.get('resume')
-        userprofile.skill.set(request.data.get('skill'))
-        userprofile.save()
+        print('()'*30)
+        print(request.data)
+        if request.data['resone'] == 'userProfile':
+            userprofile = request.user.userprofile
+            userprofile.bio = request.data.get('bio')
+            userprofile.resume = request.data.get('resume')
+            userprofile.skill.set(request.data.get('skill'))
+            userprofile.save()
+        elif request.data['resone'] == 'user':
+            user = request.user
+            user.username = request.data.get('username')
+            user.first_name = request.data.get('first_name')
+            user.last_name = request.data.get('last_name')
+            user.save()
+            print(user)
         return Response({"message": "User updated successfully."})
