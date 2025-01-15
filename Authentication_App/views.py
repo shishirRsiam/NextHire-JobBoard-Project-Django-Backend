@@ -162,3 +162,35 @@ class UserUpdateView(APIView):
             user.save()
             print(user)
         return Response({"message": "User updated successfully."})
+
+
+
+
+
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+
+class UpdatePasswordView(APIView):
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token')
+        password = request.data.get('password')
+        id = urlsafe_base64_decode(request.data.get('uid'))
+        
+        if not id or not token or not password:
+            return Response({"error": "Missing required fields."}, status=400)
+
+        try:
+            user = User.objects.get(pk=id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=404)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({"error": "Invalid token."}, status=400)
+
+        user.password = make_password(password)
+        user.save()
+
+        return Response({"message": "Password updated successfully."})

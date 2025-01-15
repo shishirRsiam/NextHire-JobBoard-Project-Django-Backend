@@ -11,6 +11,7 @@ router.register('users', UserViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     # path('api/auth/', ),
+    path('api/update/password/', UpdatePasswordView.as_view(), name='update_password'),
     path('api/email/sent/', EmailSentView.as_view(), name='email_sent'),
     path('api/register/', UserRegistrationApiView.as_view(), name='register'),
     path('api/post/', JobPostApiViewSet.as_view(), name='post'),
