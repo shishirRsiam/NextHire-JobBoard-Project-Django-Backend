@@ -175,6 +175,8 @@ from django.utils.encoding import force_str
 
 class UpdatePasswordView(APIView):
     def post(self, request, *args, **kwargs):
+        print('(^)'*30)
+        print(request.data)
         token = request.data.get('token')
         password = request.data.get('password')
         id = urlsafe_base64_decode(request.data.get('uid'))
@@ -194,3 +196,5 @@ class UpdatePasswordView(APIView):
         user.save()
 
         return Response({"message": "Password updated successfully."})
+    
+
