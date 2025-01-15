@@ -62,7 +62,6 @@ class LoginApiView(APIView):
                 response = get_account_not_active_response()
                 return Response(response, status=400)
 
-
             token, _ = Token.objects.get_or_create(user=user) 
             response = get_successful_login_response(user, token)
             return Response(response, status=200)

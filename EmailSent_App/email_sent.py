@@ -39,7 +39,21 @@ def sent_password_reset_email(user):
     
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.id))
-    password_reset_url = f"http://localhost:5173/accounts/password/reset/{uid}/{token}/"
+    password_reset_url = f"http://localhost:5173/accounts/password/update/{uid}/{token}/"
+
+    html_message = render_to_string(f'{template}', {'user': user, 'password_reset_url': password_reset_url})
+    email_sent(user, subject, html_message)
+
+
+def sent_forget_password_email(user):
+    print('($)'*30)
+    print('user ->', user)
+    template = 'email_templates/password_forget_email_tamplates.html'
+    subject = f"NextHire: Password Forget Request for { user.first_name } { user.last_name }"
+    
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.id))
+    password_reset_url = f"http://localhost:5173/accounts/password/update/{uid}/{token}/"
 
     html_message = render_to_string(f'{template}', {'user': user, 'password_reset_url': password_reset_url})
     email_sent(user, subject, html_message)
