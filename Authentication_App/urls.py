@@ -3,6 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import *
 
+from EmailSent_App.views import EmailSentView
 
 router = DefaultRouter()
 router.register('users', UserViewSet)
@@ -10,6 +11,7 @@ router.register('users', UserViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     # path('api/auth/', ),
+    path('api/email/sent/', EmailSentView.as_view(), name='email_sent'),
     path('api/register/', UserRegistrationApiView.as_view(), name='register'),
     path('api/post/', JobPostApiViewSet.as_view(), name='post'),
     path('api/post/<int:pk>/', JobPostApiViewSet.as_view(), name='post_detail'),
