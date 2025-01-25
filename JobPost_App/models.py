@@ -20,6 +20,7 @@ class Applied(models.Model):
     job = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name="job_applied")
     resume = models.TextField(null=1)
     description = models.TextField(null=1)
+    is_accepted = models.BooleanField(default=0)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -38,7 +38,7 @@ class UserRegistrationApiView(APIView):
         user.save()
         user_profile.save()
 
-        email_sent.sent_account_registration_activation_email(user)
+        email_sent.sent_account_registration_activation_email(request, user)
 
         response = get_successful_account_registration_response()
         return Response(data=response, status=201)

@@ -35,7 +35,7 @@ class JobPostApiViewSet(APIView):
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):        
         job_post_id = kwargs.get('pk')
         if job_post_id:
             try:
@@ -47,11 +47,24 @@ class JobPostApiViewSet(APIView):
                     job_post.delete()
                     return Response(response, status=200)
                 
+                accept_id = request.query_params.get('is_accept', None)
+                if accept_id:
+                    for applied in job_post.job_applied.all():
+                        if applied.id == int(accept_id):
+                            applied.is_accepted = True
+                            applied.save()
+                            break
+                    response = {'message': f"'accepted successfully."}
+                    return Response(response, status=200)
 
                 is_application = request.query_params.get('is_application', None)
                 if is_application:
                     print('()'*30)
                     print(is_application)
+                    print(request.user)
+                    print(job_post.user)
+                    if request.user != job_post.user:
+                        return Response({"error": "You are not authorized to view this job post."}, status=403)
                     all_application = job_post.job_applied.all()
                     all_application_serializer = ApplySerializer(all_application, many=True)
                     job_post_serializer = JobPostSerializer(job_post)
@@ -76,9 +89,6 @@ class JobPostApiViewSet(APIView):
 
         search_by_applied = request.query_params.get('searchByApplied', None)
         search_by_profile = request.query_params.get('searchByProfile', None)
-        # if search_by_applied:
-        #     job_posts = job_posts.filter(applied__user=request.user)
-
 
         if search_by_applied:
             if search_by_applied == "Applied":
@@ -89,7 +99,6 @@ class JobPostApiViewSet(APIView):
         job_posts = job_posts.order_by('-id')
         serializer = JobPostSerializer(job_posts, many=True)
         return Response({
-            "authenticated": request.user.is_authenticated,
             "job_posts": serializer.data
         })
     
