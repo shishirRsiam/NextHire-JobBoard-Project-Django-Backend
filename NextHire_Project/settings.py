@@ -45,6 +45,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
+    'http://localhost:3000',
 ]
 
 
@@ -68,23 +69,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'NextHire_Project.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': credentials.DATABASE_ENGINE,
+#         'NAME': credentials.DATABASE_NAME,
+#         'USER': credentials.DATABASE_USER,
+#         'PASSWORD': credentials.DATABASE_PASSWORD, 
+#         'HOST': credentials.DATABASE_HOST,
+#         'PORT': credentials.DATABASE_PORT,
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': credentials.DATABASE_ENGINE,
-        'NAME': credentials.DATABASE_NAME,
-        'USER': credentials.DATABASE_USER,
-        'PASSWORD': credentials.DATABASE_PASSWORD, 
-        'HOST': credentials.DATABASE_HOST,
-        'PORT': credentials.DATABASE_PORT,
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -138,3 +140,8 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = credentials.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = credentials.EMAIL_HOST_PASSWORD
+
+
+
+WSGI_APPLICATION = 'NextHire_Project.wsgi.app'
+ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", 'localhost', ]

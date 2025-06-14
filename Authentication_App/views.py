@@ -12,6 +12,8 @@ class UserRegistrationApiView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
+        print('\n\n' ,'()'*30)
+        print(request.data)
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         role = request.data.get('role')
